@@ -1,5 +1,5 @@
 {
-  "name": "ДЗ NPM. Webpack. JSON. Веб-хранилище",
+  "name": "goit-js-hw-08",
   "version": "1.1.0",
   "description": "",
   "main": "index.js",
@@ -24,5 +24,10 @@
     "parcel-plugin-nuke-dist": "^1.0.1",
     "posthtml-include": "^1.6.2",
     "sass": "^1.32.8"
+  },
+  "dependencies": {
+    "lodash.throttle": "^4.1.1",
+    "simplelightbox": "^2.10.2",
+    "vimeo": "^2.1.1"
   }
 }
