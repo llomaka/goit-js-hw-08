@@ -1,4 +1,4 @@
-// import '../../node_modules/simplelightbox/src/simple-lightbox.scss';
+import '../../node_modules/simplelightbox/dist/simple-lightbox';
 // Add imports above this line
 
 import { galleryItems } from './gallery-items.js';
