@@ -7,9 +7,9 @@ const listRef = document.querySelector('.gallery');
 
 function renderArrayElements(array) {
     return array.map(({ description, original, preview }) => {
-        return  `<li><a class="gallery__item" href=${original}>
+        return  `<a class="gallery__item" href=${original}>
         <img class="gallery__image" src=${preview} alt="${description}" />
-        </a></li>`;
+        </a>`;
     }).join('');
 }
 
