@@ -6,12 +6,6 @@ import "simplelightbox/dist/simple-lightbox.min.css";
   --animation-duration: 250ms;
 }
 
-ul {
-  padding: 0px;
-  margin: 0px;
-  list-style: none;
-}
-
 .gallery {
   display: grid;
   max-width: 1140px;
