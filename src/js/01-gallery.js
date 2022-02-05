@@ -16,8 +16,3 @@ function renderArrayElements(array) {
 const markup = renderArrayElements(galleryItems);
 listRef.insertAdjacentHTML('beforeend', markup);
 let lightbox = new SimpleLightbox('.gallery a', { captionsData: 'alt', captionDelay: 250 });
-listRef.addEventListener('click', handleImageClick);
-
-function handleImageClick(event) {
-    event.preventDefault();
-}
