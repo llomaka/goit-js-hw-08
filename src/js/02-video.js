@@ -1,17 +1,21 @@
 import 'vimeo';
+import throttle from 'lodash.throttle';
 
 const iframe = document.querySelector('#vimeo-player');
 const player = new Vimeo.Player(iframe);
+const STORAGE_KEY = 'videoplayer-current-time';
+let pausedValue = localStorage.getItem(STORAGE_KEY);
+if (!pausedValue) { pausedValue = 0 };
 const pauseVideo = function ({ seconds, percent }) {
   if (percent < 1) {
-    localStorage.setItem('videoplayer-current-time', seconds);
+    localStorage.setItem(STORAGE_KEY, seconds);
   } else {
-    localStorage.setItem('videoplayer-current-time', 0);
+    localStorage.setItem(STORAGE_KEY, 0);
   }
 };
-player.on('timeupdate', pauseVideo);
-player.setCurrentTime(localStorage.getItem('videoplayer-current-time')).then(function(seconds) {
-  seconds = localStorage.getItem('videoplayer-current-time');
+player.on('timeupdate', throttle(pauseVideo, 1000));
+player.setCurrentTime(pausedValue).then(function(seconds) {
+  seconds = pausedValue;
 }).catch(function (error) {
   console.log(error);
 });
