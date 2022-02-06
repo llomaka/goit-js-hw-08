@@ -40,6 +40,7 @@ const onFormSubmit = event => {
   console.log(JSON.parse(localStorage.getItem(STORAGE_KEY)));
   localStorage.removeItem(STORAGE_KEY);
   console.log('Данные формы отправлены');
+  obj = {};
   event.currentTarget.reset();
 };
 refs.email.addEventListener('input', saveEmail);
