@@ -5,7 +5,6 @@ const refs = {
   message: document.forms[0].message,
 };
 const STORAGE_KEY = 'feedback-form-state';
-const obj = {};
 const populateInputs = function () {
   const savedObject = localStorage.getItem(STORAGE_KEY);
   if (savedObject) {
@@ -16,33 +15,36 @@ const populateInputs = function () {
       return;
     } else if (parsedSavedObject.email !== undefined) {
       refs.email.value = parsedSavedObject.email;
-      return;
     } else if (parsedSavedObject.message !== undefined) {
       refs.message.value = parsedSavedObject.message;
-      return;
     }
   }
 }
 populateInputs();
-const saveInStorage = object => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(object));
-};
-const saveEmail = event => {
-  obj.email = event.currentTarget.value;
-  throttle(saveInStorage(obj), 500);
-};
-const saveMessage = event => {
-  obj.message = event.currentTarget.value.trim();
-  throttle(saveInStorage(obj), 500);
+const saveInterimInStorage = event => {
+  const storageParams = {};
+  if (localStorage.getItem(STORAGE_KEY)) {
+    const storageObj = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (storageObj.email !== undefined) {
+      storageParams.email = storageObj.email;
+    } else if (storageObj.message !== undefined) {
+      storageParams.message = storageObj.message;
+    }
+  }
+  if (event.currentTarget.name === 'email') {
+  storageParams.email = event.currentTarget.value;
+  } else {
+  storageParams.message = event.currentTarget.value.trim();
+  }
+  throttle(localStorage.setItem(STORAGE_KEY, JSON.stringify(storageParams)), 500);
 };
 const onFormSubmit = event => {
   event.preventDefault();
   console.log(JSON.parse(localStorage.getItem(STORAGE_KEY)));
   localStorage.removeItem(STORAGE_KEY);
   console.log('Данные формы отправлены');
-  obj = {};
   event.currentTarget.reset();
 };
-refs.email.addEventListener('input', saveEmail);
-refs.message.addEventListener('input', saveMessage);
+refs.email.addEventListener('input', saveInterimInStorage);
+refs.message.addEventListener('input', saveInterimInStorage);
 refs.form.addEventListener('submit', onFormSubmit);
