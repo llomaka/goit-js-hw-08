@@ -7,9 +7,8 @@ const refs = {
 };
 const storageParams = {};
 
-// refs.email.addEventListener('input', saveInterimInStorage);
-// refs.message.addEventListener('input', saveInterimInStorage);
-refs.form.addEventListener('input', onFormInput);
+refs.email.addEventListener('input', saveInterimInStorage);
+refs.message.addEventListener('input', saveInterimInStorage);
 refs.form.addEventListener('submit', onFormSubmit);
 
 const populateInputs = function () {
@@ -32,9 +31,6 @@ const populateInputs = function () {
 }
 populateInputs();
 
-const onFormInput = event => {
-  console.log(event.target);
-};
 const saveInterimInStorage = event => {
   if (event.target.name === 'email') {
     storageParams.email = event.target.value;
