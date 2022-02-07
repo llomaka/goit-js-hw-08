@@ -14,9 +14,9 @@ const populateInputs = function () {
       refs.email.value = parsedSavedObject.email;
       refs.message.value = parsedSavedObject.message;
       return;
-    } else if (parsedSavedObject.email !== undefined) {
+    } else if (parsedSavedObject.hasOwnProperty('email')) {
       refs.email.value = parsedSavedObject.email;
-    } else if (parsedSavedObject.message !== undefined) {
+    } else if (parsedSavedObject.hasOwnProperty('message')) {
       refs.message.value = parsedSavedObject.message;
     }
   }
@@ -28,16 +28,17 @@ const storageParams = {};
 const saveInterimInStorage = event => {
   if (localStorage.getItem(STORAGE_KEY)) {
     const storageObj = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (storageObj.email !== undefined) {
+    if (storageObj.hasOwnProperty('email')) {
       storageParams.email = storageObj.email;
-    } else if (storageObj.message !== undefined) {
+    }
+    if (storageObj.hasOwnProperty('message')) {
       storageParams.message = storageObj.message;
     }
   }
   if (event.target.name === 'email') {
-  storageParams.email = event.target.value;
+    storageParams.email = event.target.value;
   } else {
-  storageParams.message = event.target.value.trim();
+    storageParams.message = event.target.value.trim();
   }
   throttle(localStorage.setItem(STORAGE_KEY, JSON.stringify(storageParams)), 500);
 };
