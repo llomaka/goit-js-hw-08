@@ -1,40 +1,41 @@
 import throttle from 'lodash.throttle';
+const STORAGE_KEY = 'feedback-form-state';
 const refs = {
   form: document.querySelector('.feedback-form'),
   email: document.forms[0].email,
   message: document.forms[0].message,
 };
-const STORAGE_KEY = 'feedback-form-state';
+const storageParams = {};
+
+// refs.email.addEventListener('input', saveInterimInStorage);
+// refs.message.addEventListener('input', saveInterimInStorage);
+refs.form.addEventListener('input', onFormInput);
+refs.form.addEventListener('submit', onFormSubmit);
 
 const populateInputs = function () {
-  const savedObject = localStorage.getItem(STORAGE_KEY);
-  if (savedObject) {
-    const parsedSavedObject = JSON.parse(savedObject);
-    if (Object.keys(parsedSavedObject).length === 2) {
-      refs.email.value = parsedSavedObject.email;
-      refs.message.value = parsedSavedObject.message;
+  if (localStorage.getItem(STORAGE_KEY)) {
+    const parsedObject = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (Object.keys(parsedObject).length === 2) {
+      refs.email.value = parsedObject.email;
+      refs.message.value = parsedObject.message;
       return;
-    } else if (parsedSavedObject.hasOwnProperty('email')) {
-      refs.email.value = parsedSavedObject.email;
-    } else if (parsedSavedObject.hasOwnProperty('message')) {
-      refs.message.value = parsedSavedObject.message;
+    } else {
+      if (parsedObject.hasOwnProperty('email')) {
+        refs.email.value = parsedObject.email;
+      }
+      if (parsedObject.hasOwnProperty('message')) {
+        refs.message.value = parsedObject.message;
+      }
+      return;
     }
   }
 }
 populateInputs();
 
-const storageParams = {};
-
+const onFormInput = event => {
+  console.log(event.target);
+};
 const saveInterimInStorage = event => {
-  if (localStorage.getItem(STORAGE_KEY)) {
-    const storageObj = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (storageObj.hasOwnProperty('email')) {
-      storageParams.email = storageObj.email;
-    }
-    if (storageObj.hasOwnProperty('message')) {
-      storageParams.message = storageObj.message;
-    }
-  }
   if (event.target.name === 'email') {
     storageParams.email = event.target.value;
   } else {
@@ -45,13 +46,15 @@ const saveInterimInStorage = event => {
 
 const onFormSubmit = event => {
   event.preventDefault();
+  const {
+    elements: { email }
+  } = event.currentTarget;
+  if (email.value === "") {
+    return alert("Поле Email формы должно быть заполнено!");
+  }
   console.log(JSON.parse(localStorage.getItem(STORAGE_KEY)));
   console.log('Данные формы отправлены');
   event.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
   storageParams = {};
 };
-
-refs.email.addEventListener('input', saveInterimInStorage);
-refs.message.addEventListener('input', saveInterimInStorage);
-refs.form.addEventListener('submit', onFormSubmit);
