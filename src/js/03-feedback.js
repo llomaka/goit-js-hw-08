@@ -7,9 +7,13 @@ const refs = {
 };
 const storageParams = {};
 
-refs.email.addEventListener('input', saveInterimInStorage);
-refs.message.addEventListener('input', saveInterimInStorage);
+refs.email.addEventListener('input', throttle(saveInterimInStorage, 500));
+refs.message.addEventListener('input', throttle(saveInterimInStorage, 500));
 refs.form.addEventListener('submit', onFormSubmit);
+
+console.log(refs.email);
+console.log(refs.message);
+console.log(storageParams);
 
 const populateInputs = function () {
   if (localStorage.getItem(STORAGE_KEY)) {
@@ -37,11 +41,13 @@ const saveInterimInStorage = event => {
   } else {
     storageParams.message = event.target.value.trim();
   }
-  throttle(localStorage.setItem(STORAGE_KEY, JSON.stringify(storageParams)), 500);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(storageParams));
+  storageParams = {};
 };
 
 const onFormSubmit = event => {
   event.preventDefault();
+  console.log(event.currentTarget.elements);
   const {
     elements: { email }
   } = event.currentTarget;
