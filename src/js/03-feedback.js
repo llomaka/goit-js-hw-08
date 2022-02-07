@@ -5,6 +5,7 @@ const refs = {
   message: document.forms[0].message,
 };
 const STORAGE_KEY = 'feedback-form-state';
+
 const populateInputs = function () {
   const savedObject = localStorage.getItem(STORAGE_KEY);
   if (savedObject) {
@@ -21,8 +22,10 @@ const populateInputs = function () {
   }
 }
 populateInputs();
+
+const storageParams = {};
+
 const saveInterimInStorage = event => {
-  const storageParams = {};
   if (localStorage.getItem(STORAGE_KEY)) {
     const storageObj = JSON.parse(localStorage.getItem(STORAGE_KEY));
     if (storageObj.email !== undefined) {
@@ -31,20 +34,23 @@ const saveInterimInStorage = event => {
       storageParams.message = storageObj.message;
     }
   }
-  if (event.currentTarget.name === 'email') {
-  storageParams.email = event.currentTarget.value;
+  if (event.target.name === 'email') {
+  storageParams.email = event.target.value;
   } else {
-  storageParams.message = event.currentTarget.value.trim();
+  storageParams.message = event.target.value.trim();
   }
   throttle(localStorage.setItem(STORAGE_KEY, JSON.stringify(storageParams)), 500);
 };
+
 const onFormSubmit = event => {
   event.preventDefault();
   console.log(JSON.parse(localStorage.getItem(STORAGE_KEY)));
-  localStorage.removeItem(STORAGE_KEY);
   console.log('Данные формы отправлены');
   event.currentTarget.reset();
+  localStorage.removeItem(STORAGE_KEY);
+  storageParams = {};
 };
+
 refs.email.addEventListener('input', saveInterimInStorage);
 refs.message.addEventListener('input', saveInterimInStorage);
 refs.form.addEventListener('submit', onFormSubmit);
