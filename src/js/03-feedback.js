@@ -5,15 +5,6 @@ const refs = {
   email: document.forms[0].email,
   message: document.forms[0].message,
 };
-const storageParams = {};
-
-refs.email.addEventListener('input', throttle(saveInterimInStorage, 500));
-refs.message.addEventListener('input', throttle(saveInterimInStorage, 500));
-refs.form.addEventListener('submit', onFormSubmit);
-
-console.log(refs.email);
-console.log(refs.message);
-console.log(storageParams);
 
 const populateInputs = function () {
   if (localStorage.getItem(STORAGE_KEY)) {
@@ -36,18 +27,34 @@ const populateInputs = function () {
 populateInputs();
 
 const saveInterimInStorage = event => {
+  let email = '';
+  let message = '';
   if (event.target.name === 'email') {
-    storageParams.email = event.target.value;
-  } else {
-    storageParams.message = event.target.value.trim();
+    email = event.target.value;
+    if (localStorage.getItem(STORAGE_KEY)) {
+      if (JSON.parse(localStorage.getItem(STORAGE_KEY)).hasOwnProperty('message')) {
+        message = JSON.parse(localStorage.getItem(STORAGE_KEY)).message;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ email, message }));
+        return;
+      }
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ email }));
   }
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(storageParams));
-  storageParams = {};
+  else {
+    message = event.target.value.trim();
+    if (localStorage.getItem(STORAGE_KEY)) {
+      if (JSON.parse(localStorage.getItem(STORAGE_KEY)).hasOwnProperty('email')) {
+        email = JSON.parse(localStorage.getItem(STORAGE_KEY)).email;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ email, message }));
+        return;
+      }
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ message }));
+  }
 };
 
 const onFormSubmit = event => {
   event.preventDefault();
-  console.log(event.currentTarget.elements);
   const {
     elements: { email }
   } = event.currentTarget;
@@ -58,5 +65,8 @@ const onFormSubmit = event => {
   console.log('Данные формы отправлены');
   event.currentTarget.reset();
   localStorage.removeItem(STORAGE_KEY);
-  storageParams = {};
 };
+
+refs.email.addEventListener('input', throttle(saveInterimInStorage, 500));
+refs.message.addEventListener('input', throttle(saveInterimInStorage, 500));
+refs.form.addEventListener('submit', onFormSubmit);
